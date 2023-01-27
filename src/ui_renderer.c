@@ -81,9 +81,11 @@ static void AddBorder(float x, float y, float w, float h, float s, Color c) {
   AddRect(x + w, y, s, h, c);
 }
 
-static void AddPiece(Piece p, float x, float y) {
+static float hold_color[3] = {0.72f, 0.72f, 0.72f};
+
+static void AddPiece(Piece p, float x, float y, bool held) {
   const bool *shape = PieceGetShape(p);
-  const float *color = PieceGetColor(p);
+  const float *color = held ? hold_color : PieceGetColor(p);
   const float *offset = PieceGetOffset(p);
 
   x += offset[0] * 0.75f + 4 * 0.125f;
@@ -147,14 +149,15 @@ void UIRendererUpdate(UIRenderer *ur, Game *game) {
   AddBorder(15.5f, 0.0f, 4.0f, 20.0f, 0.1f, border);
   AddBorder(5.0f, 0.0f, 10.0f, 20.0f, 0.1f, border);
 
-  if (game->hold_piece != PIECE_EMPTY) AddPiece(game->hold_piece, 0.5f, 0.0f);
+  if (game->hold_piece != PIECE_EMPTY)
+    AddPiece(game->hold_piece, 0.5f, 0.0f, game->held);
 
   for (int i = 0; i < 6; ++i) {
     int idx = game->bag_index + i;
     if (idx < PIECE_COUNT - 1) {
-      AddPiece(game->current_bag[idx], 15.5f, 3.4f * i);
+      AddPiece(game->current_bag[idx], 15.5f, 3.4f * i, false);
     } else {
-      AddPiece(game->next_bag[idx - (PIECE_COUNT - 1)], 15.5f, 3.4f * i);
+      AddPiece(game->next_bag[idx - (PIECE_COUNT - 1)], 15.5f, 3.4f * i, false);
     }
   }
 }
