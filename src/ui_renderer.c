@@ -22,10 +22,10 @@ typedef struct {
 } Vertex;
 
 #define VERTICES_CAPACITY 300
-Vertex triangle_vertices[VERTICES_CAPACITY];
-int vertex_count = 0;
+static Vertex triangle_vertices[VERTICES_CAPACITY];
+static int vertex_count = 0;
 
-void AddTriangle(
+static void AddTriangle(
   Vec2 p1, Vec2 p2, Vec2 p3, Color c, Vec2 uv1, Vec2 uv2, Vec2 uv3
 ) {
   if (vertex_count + 3 > VERTICES_CAPACITY) UIRendererRender();
@@ -46,8 +46,8 @@ void AddTriangle(
   vertex_count++;
 }
 
-Vec2 untextured_uv = {0.5f, 0.5f};
-void AddRect(float x, float y, float w, float h, Color c) {
+static Vec2 untextured_uv = {0.5f, 0.5f};
+static void AddRect(float x, float y, float w, float h, Color c) {
   Vec2 p1 = {x, y};
   Vec2 p2 = {x + w, y};
   Vec2 p3 = {x, y + h};
@@ -57,7 +57,7 @@ void AddRect(float x, float y, float w, float h, Color c) {
   AddTriangle(p2, p3, p4, c, untextured_uv, untextured_uv, untextured_uv);
 }
 
-void AddRectTextured(
+static void AddRectTextured(
   float x, float y, float w, float h, Color c, float u, float v
 ) {
   Vec2 p1 = {x, y};
@@ -74,14 +74,14 @@ void AddRectTextured(
   AddTriangle(p2, p3, p4, c, uv2, uv3, uv4);
 }
 
-void AddBorder(float x, float y, float w, float h, float s, Color c) {
+static void AddBorder(float x, float y, float w, float h, float s, Color c) {
   AddRect(x - s, y - s, w + s * 2.0f, s, c);
   AddRect(x - s, y + h, w + s * 2.0f, s, c);
   AddRect(x - s, y, s, h, c);
   AddRect(x + w, y, s, h, c);
 }
 
-void AddPiece(Piece p, float x, float y) {
+static void AddPiece(Piece p, float x, float y) {
   const bool *shape = PieceGetShape(p);
   const float *color = PieceGetColor(p);
   const float *offset = PieceGetOffset(p);
