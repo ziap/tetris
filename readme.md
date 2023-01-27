@@ -2,6 +2,8 @@
 
 Simple Tetris implementation in C and OpenGL.
 
+![](logo.png)
+
 ## Features
 
 - Variable goal marathon mode
