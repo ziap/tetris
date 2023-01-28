@@ -7,6 +7,7 @@
 #define memcpy(dest, src, size) __builtin_memcpy(dest, src, size)
 
 #define GL_FLOAT 0x1406
+#define GL_INT 0x1404
 #define GL_COLOR_BUFFER_BIT 0x4000
 #define GL_TRIANGLES 0x0004
 #define GL_FRAGMENT_SHADER 0x8B30

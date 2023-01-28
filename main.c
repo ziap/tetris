@@ -124,8 +124,6 @@ int main(void) {
   srand(time(0));
   app_init();
 
-  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
   while (!glfwWindowShouldClose(window)) {
     app_update(dt);
     glfwSwapBuffers(window);

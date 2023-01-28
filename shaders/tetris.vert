@@ -9,9 +9,11 @@ precision highp float;
 layout (location = 0) in vec2 a_pos;
 layout (location = 1) in vec3 a_color;
 layout (location = 2) in vec2 a_uv;
+layout (location = 3) in float a_type;
 
 out vec3 out_color;
 out vec2 out_uv;
+out float out_type;
 
 uniform vec2 u_resolution;
 
@@ -25,4 +27,5 @@ void main() {
   
   out_color = a_color;
   out_uv = a_uv;
+  out_type = a_type;
 }

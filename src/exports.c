@@ -2,12 +2,10 @@
 
 #include "controller.h"
 #include "imports.h"
-#include "tile_renderer.h"
-#include "ui_renderer.h"
+#include "renderer.h"
 
 static Game game;
-static TileRenderer tile_renderer;
-static UIRenderer ui_renderer;
+static Renderer ui_renderer;
 static Controller controller = {0};
 
 void press(Key key) { controller.pressing[key] = true; }
@@ -25,8 +23,7 @@ void app_init() {
 
   GameInit(&game);
 
-  UIRendererInit(&ui_renderer);
-  TileRendererInit(&tile_renderer);
+  RendererInit(&ui_renderer);
 }
 
 void app_update(float dt) {
@@ -36,11 +33,7 @@ void app_update(float dt) {
   ControllerUpdateGame(&controller, &game, dt);
   GameTick(&game, dt);
 
-  UIRendererUse(&ui_renderer);
-  UIRendererUpdate(&ui_renderer, &game);
-  UIRendererRender();
-
-  TileRendererUse(&tile_renderer);
-  TileRendererUpdate(&tile_renderer, &game);
-  TileRendererRender(&tile_renderer);
+  RendererUse(&ui_renderer);
+  RendererUpdate(&ui_renderer, &game);
+  RendererRender();
 }
