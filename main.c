@@ -37,6 +37,7 @@ void key_callback(
     case GLFW_KEY_SPACE: mapped_key = KEY_DROP_HARD; break;
     case GLFW_KEY_Z: mapped_key = KEY_ROTATE_CCW; break;
     case GLFW_KEY_C: mapped_key = KEY_HOLD; break;
+    case GLFW_KEY_R: mapped_key = KEY_RESTART; break;
     default: return;
   };
 

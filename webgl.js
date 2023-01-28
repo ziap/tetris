@@ -140,7 +140,8 @@ const map = new Map([
   ['ArrowDown', 5],
   [' ', 6],
   ['z', 4],
-  ['c', 7]
+  ['c', 7],
+  ['r', 8]
 ])
 
 function keydown(e) {

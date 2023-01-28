@@ -12,6 +12,8 @@ typedef enum {
   KEY_DROP_HARD,
 
   KEY_HOLD,
+  KEY_RESTART,
+
   KEY_COUNT,
 } Key;
 

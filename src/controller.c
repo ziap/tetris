@@ -20,6 +20,11 @@ void ControllerUpdateGame(Controller* c, Game* game, float dt) {
     }
   }
 
+  if (dispatching[KEY_RESTART]) {
+    GameInit(game);
+    return;
+  }
+
   if (dispatching[KEY_DROP_HARD]) GameDropHard(game);
   if (dispatching[KEY_ROTATE_CW]) GameRotate(game, true);
   if (dispatching[KEY_ROTATE_CCW]) GameRotate(game, false);

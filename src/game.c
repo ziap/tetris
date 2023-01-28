@@ -198,8 +198,8 @@ static bool CheckWallKick(Game *game, FallingPiece *p, bool cw) {
 void GameInit(Game *game) {
   game->level = 0;
   game->speed = 1;
-  game->score = 0;
 
+  game->score = 0;
   game->line_cleared = 0;
   game->level_progress = 0;
 
@@ -226,6 +226,8 @@ void GameInit(Game *game) {
   game->hold_piece = PIECE_EMPTY;
 
   game->over = false;
+
+  memset(game->data, 0, sizeof(game->data));
 
   SetFallingPiece(game);
   UpdateGhost(game);

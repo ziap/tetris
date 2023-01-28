@@ -4,6 +4,7 @@
 #define NULL (const void *)0
 #define offsetof(t, d) __builtin_offsetof(t, d)
 #define sqrtf(x) __builtin_sqrtf(x)
+#define memset(dest, c, size) __builtin_memset(dest, c, size)
 #define memcpy(dest, src, size) __builtin_memcpy(dest, src, size)
 
 #define GL_FLOAT 0x1406

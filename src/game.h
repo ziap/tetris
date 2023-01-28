@@ -29,7 +29,6 @@ typedef struct {
 
   Piece* current_bag;
   Piece* next_bag;
-
   int bag_index;
 
   bool held;
