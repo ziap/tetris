@@ -45,6 +45,7 @@ static void SetFallingPiece(Game *game) {
   game->falling.rotation = 0;
   game->falling.x = 3;
   game->falling.y = 0;
+  game->gravity_delay = 1;
 
   if (Collision(game, PieceGetShape(game->falling.type), 3, 0)) {
     game->over = true;
@@ -76,6 +77,7 @@ static void UpdateGhost(Game *game) {
   }
 }
 
+// TODO: Reimplement this with memmove and no extra buffer
 static void LineClear(Game *game) {
   Piece new_data[20 * 10] = {0};
   int current_row = 19;
@@ -141,10 +143,8 @@ static void Lock(Game *game) {
 }
 
 static void ResetLock(Game *game) {
-  if (game->hit_ground && game->lock_resets < 15) {
-    game->lock_resets++;
-    game->gravity_delay = 1;
-  }
+  if (game->hit_ground) game->lock_resets++;
+  if (game->lock_resets < 15) game->gravity_delay = 1;
 }
 
 typedef struct {
@@ -153,25 +153,25 @@ typedef struct {
 } Offset;
 
 static Offset KICK_NORMAL[8][4] = {
-  {{-1, 0}, {-1, -1}, {0, +2}, {-1, +2}},  // 3 >> 0
-  {{-1, 0}, {-1, +1}, {0, -2}, {-1, -2}},  // 0 >> 1
-  {{+1, 0}, {+1, -1}, {0, +2}, {+1, +2}},  // 1 >> 2
-  {{+1, 0}, {+1, +1}, {0, -2}, {+1, -2}},  // 2 >> 3
-  {{+1, 0}, {+1, -1}, {0, +2}, {+1, +2}},  // 1 >> 0
-  {{-1, 0}, {-1, +1}, {0, -2}, {-1, -2}},  // 2 >> 1
-  {{-1, 0}, {-1, -1}, {0, +2}, {-1, +2}},  // 3 >> 2
-  {{+1, 0}, {+1, +1}, {0, -2}, {+1, -2}},  // 0 >> 3
+  {{-1, 0}, {-1, +1}, {0, -2}, {-1, -2}},  // 3 >> 0
+  {{-1, 0}, {-1, -1}, {0, +2}, {-1, +2}},  // 0 >> 1
+  {{+1, 0}, {+1, +1}, {0, -2}, {+1, -2}},  // 1 >> 2
+  {{+1, 0}, {+1, -1}, {0, +2}, {+1, +2}},  // 2 >> 3
+  {{+1, 0}, {+1, +1}, {0, -2}, {+1, -2}},  // 1 >> 0
+  {{-1, 0}, {-1, -1}, {0, +2}, {-1, +2}},  // 2 >> 1
+  {{-1, 0}, {-1, +1}, {0, -2}, {-1, -2}},  // 3 >> 2
+  {{+1, 0}, {+1, -1}, {0, +2}, {+1, +2}},  // 0 >> 3
 };
 
 static Offset KICK_I[8][4] = {
-  {{+1, 0}, {-2, 0}, {+1, -2}, {-2, +1}},  // 3 >> 0
-  {{-2, 0}, {+1, 0}, {-2, -1}, {+1, +2}},  // 0 >> 1
-  {{-1, 0}, {+2, 0}, {-1, +2}, {+2, -1}},  // 1 >> 2
-  {{+2, 0}, {-1, 0}, {+2, +1}, {-1, -2}},  // 2 >> 3
-  {{+2, 0}, {-1, 0}, {+2, +1}, {-1, -2}},  // 1 >> 0
-  {{+1, 0}, {-2, 0}, {+1, -2}, {-2, +1}},  // 2 >> 1
-  {{-2, 0}, {+1, 0}, {-2, -1}, {+1, +2}},  // 3 >> 2
-  {{-1, 0}, {+2, 0}, {-1, +2}, {+2, -1}},  // 0 >> 3
+  {{+1, 0}, {-2, 0}, {+1, +2}, {-2, -1}},  // 3 >> 0
+  {{-2, 0}, {+1, 0}, {-2, +1}, {+1, -2}},  // 0 >> 1
+  {{-1, 0}, {+2, 0}, {-1, -2}, {+2, +1}},  // 1 >> 2
+  {{+2, 0}, {-1, 0}, {+2, -1}, {-1, +2}},  // 2 >> 3
+  {{+2, 0}, {-1, 0}, {+2, -1}, {-1, +2}},  // 1 >> 0
+  {{+1, 0}, {-2, 0}, {+1, +2}, {-2, -1}},  // 2 >> 1
+  {{-2, 0}, {+1, 0}, {-2, +1}, {+1, -2}},  // 3 >> 2
+  {{-1, 0}, {+2, 0}, {-1, -2}, {+2, +1}},  // 0 >> 3
 };
 
 static bool CheckWallKick(Game *game, FallingPiece *p, bool cw) {
@@ -183,12 +183,12 @@ static bool CheckWallKick(Game *game, FallingPiece *p, bool cw) {
 
   for (Offset *offset = kick_table; offset != kick_table + 4; ++offset) {
     int x = p->x + offset->x;
-    int y = p->y - offset->y;
+    int y = p->y + offset->y;
 
     if (Collision(game, rotation_table, x, y)) continue;
 
     p->x += offset->x;
-    p->y -= offset->y;
+    p->y += offset->y;
     return true;
   }
 
@@ -245,14 +245,15 @@ void GameTick(Game *game, float dt) {
     game->gravity_delay -= dg;
 
     if (game->gravity_delay <= 0) {
-      game->falling.y++;
+      while (game->gravity_delay <= 0) {
+        game->falling.y++;
+        game->gravity_delay += 1;
 
-      if (game->soft_dropped) game->score++;
+        if (game->soft_dropped) game->score++;
+        if (game->falling.y >= game->ghost_y) game->hit_ground = true;
+      }
       game->soft_dropped = false;
-
       game->gravity_delay = 1;
-
-      if (game->falling.y >= game->ghost_y) game->hit_ground = true;
     }
   } else {
     game->gravity_delay -= dt / 0.5f;
