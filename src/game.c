@@ -77,16 +77,15 @@ static void UpdateGhost(Game *game) {
   }
 }
 
-// TODO: Reimplement this with memmove and no extra buffer
 static void LineClear(Game *game) {
-  Piece new_data[20 * 10] = {0};
-  int current_row = 19;
+  int current_row = game->ghost_y + 3;
   int line_cleared = 0;
 
-  for (int i = 19; i > 0; --i) {
+  for (int i = current_row; i >= game->ghost_y; --i) {
     bool filled = true;
+
     for (int j = 0; j < 10; ++j) {
-      new_data[10 * current_row + j] = game->data[10 * i + j];
+      game->data[10 * current_row + j] = game->data[10 * i + j];
 
       if (game->data[10 * i + j] == PIECE_EMPTY) filled = false;
     }
@@ -98,9 +97,13 @@ static void LineClear(Game *game) {
     }
   }
 
-  memcpy(game->data, new_data, sizeof(game->data));
-
   if (line_cleared > 0) {
+    memmove(
+      game->data + line_cleared * 10, game->data,
+      sizeof(game->data) * game->ghost_y / 20
+    );
+    memset(game->data, 0, sizeof(game->data) * line_cleared / 20);
+
     game->line_cleared += line_cleared;
 
     if (line_cleared == 4) {
