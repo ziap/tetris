@@ -100,9 +100,9 @@ static void LineClear(Game *game) {
   if (line_cleared > 0) {
     memmove(
       game->data + line_cleared * 10, game->data,
-      sizeof(game->data) * game->ghost_y / 20
+      sizeof(game->data) / 20 * game->ghost_y
     );
-    memset(game->data, 0, sizeof(game->data) * line_cleared / 20);
+    memset(game->data, 0, sizeof(game->data) / 20 * line_cleared);
 
     game->line_cleared += line_cleared;
 
@@ -210,14 +210,6 @@ void GameInit(Game *game) {
   game->hit_ground = false;
   game->lock_resets = 0;
 
-  for (int i = 1; i < PIECE_COUNT; ++i) {
-    game->bag1[i - 1] = i;
-    game->bag2[i - 1] = i;
-  }
-
-  ShuffleBag(game->bag1);
-  ShuffleBag(game->bag2);
-
   game->current_bag = game->bag1;
   game->next_bag = game->bag2;
   game->bag_index = 0;
@@ -226,6 +218,14 @@ void GameInit(Game *game) {
   game->hold_piece = PIECE_EMPTY;
 
   game->over = false;
+
+  for (int i = 1; i < PIECE_COUNT; ++i) {
+    game->bag1[i - 1] = i;
+    game->bag2[i - 1] = i;
+  }
+
+  ShuffleBag(game->bag1);
+  ShuffleBag(game->bag2);
 
   memset(game->data, 0, sizeof(game->data));
 
