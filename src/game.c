@@ -146,8 +146,11 @@ static void Lock(Game *game) {
 }
 
 static void ResetLock(Game *game) {
-  if (game->hit_ground) game->lock_resets++;
-  if (game->lock_resets < 15) game->gravity_delay = 1;
+  if (game->falling.y >= game->ghost_y) game->hit_ground = true;
+  if (game->hit_ground) {
+    game->lock_resets++;
+    if (game->lock_resets < 15) game->gravity_delay = 1;
+  }
 }
 
 typedef struct {
@@ -155,43 +158,37 @@ typedef struct {
   int y;
 } Offset;
 
-static Offset KICK_NORMAL[8][4] = {
+static Offset KICK_NORMAL[][4] = {
   {{-1, 0}, {-1, +1}, {0, -2}, {-1, -2}},  // 3 >> 0
   {{-1, 0}, {-1, -1}, {0, +2}, {-1, +2}},  // 0 >> 1
   {{+1, 0}, {+1, +1}, {0, -2}, {+1, -2}},  // 1 >> 2
   {{+1, 0}, {+1, -1}, {0, +2}, {+1, +2}},  // 2 >> 3
-  {{+1, 0}, {+1, +1}, {0, -2}, {+1, -2}},  // 1 >> 0
-  {{-1, 0}, {-1, -1}, {0, +2}, {-1, +2}},  // 2 >> 1
-  {{-1, 0}, {-1, +1}, {0, -2}, {-1, -2}},  // 3 >> 2
-  {{+1, 0}, {+1, -1}, {0, +2}, {+1, +2}},  // 0 >> 3
 };
 
-static Offset KICK_I[8][4] = {
+static Offset KICK_I[][4] = {
   {{+1, 0}, {-2, 0}, {+1, +2}, {-2, -1}},  // 3 >> 0
   {{-2, 0}, {+1, 0}, {-2, +1}, {+1, -2}},  // 0 >> 1
   {{-1, 0}, {+2, 0}, {-1, -2}, {+2, +1}},  // 1 >> 2
   {{+2, 0}, {-1, 0}, {+2, -1}, {-1, +2}},  // 2 >> 3
-  {{+2, 0}, {-1, 0}, {+2, -1}, {-1, +2}},  // 1 >> 0
-  {{+1, 0}, {-2, 0}, {+1, +2}, {-2, -1}},  // 2 >> 1
-  {{-2, 0}, {+1, 0}, {-2, +1}, {+1, -2}},  // 3 >> 2
-  {{-1, 0}, {+2, 0}, {-1, -2}, {+2, +1}},  // 0 >> 3
 };
 
 static bool CheckWallKick(Game *game, FallingPiece *p, bool cw) {
   const bool *rotation_table = FallingPieceGetRotation(p);
   if (!Collision(game, rotation_table, p->x, p->y)) return true;
 
-  int idx = p->rotation + !cw * 4;
+  // Index of n - 1 >> n: n
+  // Index of n + 1 >> n: (n + 1) % 4
+  int idx = (p->rotation + !cw) % 4;
   Offset *kick_table = p->type == PIECE_I ? KICK_I[idx] : KICK_NORMAL[idx];
 
   for (Offset *offset = kick_table; offset != kick_table + 4; ++offset) {
-    int x = p->x + offset->x;
-    int y = p->y + offset->y;
+    int x = p->x + (cw ? offset->x : -offset->x);
+    int y = p->y + (cw ? offset->y : -offset->y);
 
     if (Collision(game, rotation_table, x, y)) continue;
 
-    p->x += offset->x;
-    p->y += offset->y;
+    p->x = x;
+    p->y = y;
     return true;
   }
 
