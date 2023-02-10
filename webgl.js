@@ -145,7 +145,6 @@ const map = new Map([
 ])
 
 function keydown(e) {
-  if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return
   const mapped = map.get(e.key)
   if (mapped) {
     exports.press(mapped - 1)
@@ -154,7 +153,6 @@ function keydown(e) {
 }
 
 function keyup(e) {
-  if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return
   const mapped = map.get(e.key)
   if (mapped) {
     exports.release(mapped - 1)

@@ -250,7 +250,10 @@ void GameTick(Game *game, float dt) {
         game->gravity_delay += 1;
 
         if (game->soft_dropped) game->score++;
-        if (game->falling.y >= game->ghost_y) game->hit_ground = true;
+        if (game->falling.y >= game->ghost_y) {
+          game->hit_ground = true;
+          break;
+        }
       }
       game->soft_dropped = false;
       game->gravity_delay = 1;
