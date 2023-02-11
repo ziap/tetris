@@ -53,10 +53,8 @@ static void SetFallingPiece(Game *game) {
 }
 
 static void LevelUp(Game *game) {
-  while (game->level_progress >= 5 * (game->level + 1)) {
-    game->level++;
-    game->level_progress -= 5 * game->level;
-  }
+  game->level += game->level_progress / 5;
+  game->level_progress %= 5;
 
   game->speed = 1.0f;
   for (int i = 0; i < game->level; ++i) {
@@ -105,12 +103,7 @@ static void LineClear(Game *game) {
     memset(game->data, 0, sizeof(game->data) / 20 * line_cleared);
 
     game->line_cleared += line_cleared;
-
-    if (line_cleared == 4) {
-      game->level_progress += 8;
-    } else {
-      game->level_progress += 2 * line_cleared + 1;
-    }
+    game->level_progress += line_cleared;
 
     LevelUp(game);
 

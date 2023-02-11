@@ -32,22 +32,30 @@ void ControllerUpdateGame(Controller* c, Game* game, float dt) {
 
   if (dispatching[KEY_SLIDE_LEFT]) {
     c->as_left_delay = DAS;
+    c->dir = LEFT;
     GameSlide(game, -1);
   } else if (c->pressing[KEY_SLIDE_LEFT]) {
-    c->as_left_delay -= dt;
-    if (c->as_left_delay <= 0) {
-      c->as_left_delay = ARR;
-      GameSlide(game, -1);
+    if (!c->pressing[KEY_SLIDE_RIGHT]) c->dir = LEFT;
+    if (c->dir == LEFT) {
+      c->as_left_delay -= dt;
+      if (c->as_left_delay <= 0) {
+        c->as_left_delay = ARR;
+        GameSlide(game, -1);
+      }
     }
   }
   if (dispatching[KEY_SLIDE_RIGHT]) {
     c->as_right_delay = DAS;
+    c->dir = RIGHT;
     GameSlide(game, 1);
   } else if (c->pressing[KEY_SLIDE_RIGHT]) {
-    c->as_right_delay -= dt;
-    if (c->as_right_delay <= 0) {
-      c->as_right_delay = ARR;
-      GameSlide(game, 1);
+    if (!c->pressing[KEY_SLIDE_LEFT]) c->dir = RIGHT;
+    if (c->dir == RIGHT) {
+      c->as_right_delay -= dt;
+      if (c->as_right_delay <= 0) {
+        c->as_right_delay = ARR;
+        GameSlide(game, 1);
+      }
     }
   }
 
