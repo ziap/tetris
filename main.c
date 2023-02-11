@@ -24,8 +24,7 @@ void key_callback(
 ) {
   (void)window;
   (void)scancode;
-
-  if (mods) return;
+  (void)mods;
 
   Key mapped_key;
 
