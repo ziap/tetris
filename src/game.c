@@ -1,5 +1,7 @@
 #include "game.h"
 
+static int line_sz(int lines) { return sizeof(Piece) * 10 * lines; }
+
 static void ShuffleBag(Piece *bag) {
   for (int i = 0; i < PIECE_COUNT - 1; ++i) {
     int j = randint(PIECE_COUNT - 1);
@@ -96,11 +98,8 @@ static void LineClear(Game *game) {
   }
 
   if (line_cleared > 0) {
-    memmove(
-      game->data + line_cleared * 10, game->data,
-      sizeof(game->data) / 20 * game->ghost_y
-    );
-    memset(game->data, 0, sizeof(game->data) / 20 * line_cleared);
+    memmove(game->data + line_cleared * 10, game->data, line_sz(game->ghost_y));
+    memset(game->data, 0, line_sz(line_cleared));
 
     game->line_cleared += line_cleared;
     game->level_progress += line_cleared;
@@ -151,14 +150,14 @@ typedef struct {
   int y;
 } Offset;
 
-static Offset KICK_NORMAL[][4] = {
+static Offset KICK_NORMAL[4][4] = {
   {{-1, 0}, {-1, +1}, {0, -2}, {-1, -2}},  // 3 >> 0
   {{-1, 0}, {-1, -1}, {0, +2}, {-1, +2}},  // 0 >> 1
   {{+1, 0}, {+1, +1}, {0, -2}, {+1, -2}},  // 1 >> 2
   {{+1, 0}, {+1, -1}, {0, +2}, {+1, +2}},  // 2 >> 3
 };
 
-static Offset KICK_I[][4] = {
+static Offset KICK_I[4][4] = {
   {{+1, 0}, {-2, 0}, {+1, +2}, {-2, -1}},  // 3 >> 0
   {{-2, 0}, {+1, 0}, {-2, +1}, {+1, -2}},  // 0 >> 1
   {{-1, 0}, {+2, 0}, {-1, -2}, {+2, +1}},  // 1 >> 2
@@ -220,7 +219,7 @@ void GameInit(Game *game) {
   ShuffleBag(game->bag1);
   ShuffleBag(game->bag2);
 
-  memset(game->data, 0, sizeof(game->data));
+  memset(game->data, 0, line_sz(20));
 
   SetFallingPiece(game);
   UpdateGhost(game);

@@ -1,6 +1,6 @@
 #include "renderer.h"
 
-#include "../shaders/tetris.h"
+#include "../resources.h"
 #include "imports.h"
 #include "shader.h"
 
@@ -108,7 +108,7 @@ static void AddPiece(Piece p, float x, float y, bool held) {
 }
 
 void RendererInit(Renderer *ur) {
-  ur->program = create_program(tetris_vert, tetris_frag);
+  ur->program = create_program(shaders_tetris_vert, shaders_tetris_frag);
 
   ur->vao = glCreateVertexArray();
   ur->vbo = glCreateBuffer();
