@@ -1,7 +1,7 @@
 #include "renderer.h"
 
-#include "../resources.h"
 #include "imports.h"
+#include "resources.h"
 #include "shader.h"
 
 typedef struct {
