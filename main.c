@@ -47,13 +47,13 @@ void key_callback(
   }
 }
 
-int glCreateBuffer() {
+int glCreateBuffer(void) {
   GLuint buf;
   glCreateBuffers(1, &buf);
   return buf;
 }
 
-int glCreateVertexArray() {
+int glCreateVertexArray(void) {
   GLuint vao;
   glCreateVertexArrays(1, &vao);
   return vao;

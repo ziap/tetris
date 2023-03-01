@@ -12,7 +12,7 @@ typedef enum {
   PIECE_Z,
   PIECE_J,
   PIECE_L,
-  PIECE_COUNT
+  PIECE_COUNT,
 } Piece;
 
 typedef struct {

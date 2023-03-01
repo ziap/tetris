@@ -13,6 +13,6 @@ typedef struct {
 extern void RendererInit(Renderer *);
 extern void RendererUse(Renderer *);
 extern void RendererUpdate(Renderer *, Game *);
-extern void RendererRender();
+extern void RendererRender(void);
 
 #endif

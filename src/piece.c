@@ -41,8 +41,8 @@ static const PieceProperty
                 0, 1, 0, 0,  //
               },
             },
-          .color = {0.0, 0.79, 0.945},
-          .offset = {0.0, 0.0},
+          .color = {0.0f, 0.79f, 0.945f},
+          .offset = {0.0f, 0.0f},
         },
       [PIECE_O] =
         {
@@ -73,8 +73,8 @@ static const PieceProperty
                 0, 0, 0, 0,  //
               },
             },
-          .color = {0.98, 0.83, 0.0},
-          .offset = {0.0, 0.5},
+          .color = {0.98f, 0.83f, 0.0f},
+          .offset = {0.0f, 0.5f},
         },
       [PIECE_T] =
         {
@@ -105,8 +105,8 @@ static const PieceProperty
                 0, 0, 0, 0,  //
               },
             },
-          .color = {0.72, 0.26, 0.62},
-          .offset = {0.5, 0.5},
+          .color = {0.72f, 0.26f, 0.62f},
+          .offset = {0.5f, 0.5f},
         },
       [PIECE_S] =
         {
@@ -137,8 +137,8 @@ static const PieceProperty
                 0, 0, 0, 0,  //
               },
             },
-          .color = {0.0, 0.73, 0.23},
-          .offset = {0.5, 0.5},
+          .color = {0.0f, 0.73f, 0.23f},
+          .offset = {0.5f, 0.5f},
         },
       [PIECE_Z] =
         {
@@ -169,8 +169,8 @@ static const PieceProperty
                 0, 0, 0, 0,  //
               },
             },
-          .color = {1.0, 0.0, 0.13},
-          .offset = {0.5, 0.5},
+          .color = {1.0f, 0.0f, 0.13f},
+          .offset = {0.5f, 0.5f},
         },
       [PIECE_J] =
         {
@@ -201,8 +201,8 @@ static const PieceProperty
                 0, 0, 0, 0,  //
               },
             },
-          .color = {0.36, 0.38, 0.68},
-          .offset = {0.5, 0.5},
+          .color = {0.36f, 0.38f, 0.68f},
+          .offset = {0.5f, 0.5f},
         },
       [PIECE_L] =
         {
@@ -233,8 +233,8 @@ static const PieceProperty
                 0, 0, 0, 0,  //
               },
             },
-          .color = {0.98, 0.45, 0.03},
-          .offset = {0.5, 0.5},
+          .color = {0.98f, 0.45f, 0.03f},
+          .offset = {0.5f, 0.5f},
         },
 };
 

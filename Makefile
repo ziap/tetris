@@ -1,9 +1,9 @@
 CC=clang
 PKGS=glfw3 glew
-CFLAGS=-Wall -Wextra -pedantic -std=c99 -march=native -mtune=native $$(pkg-config --cflags $(PKGS))
+CFLAGS=-Wall -Wextra -pedantic -std=c99 $$(pkg-config --cflags $(PKGS))
 LDLIBS=-lm $$(pkg-config --libs $(PKGS))
 
-DEBUG_FLAGS=-Og -ggdb
+DEBUG_FLAGS=-Og -ggdb -march=native -mtune=native
 BUILD_FLAGS=-O3 -s
 
 WASM_CFLAGS=-O3 --target=wasm32 -flto -nostdlib -fvisibility=hidden -mbulk-memory -msimd128

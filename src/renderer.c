@@ -214,7 +214,7 @@ void RendererUse(Renderer *ur) {
   vertex_count = 0;
 }
 
-void RendererRender() {
+void RendererRender(void) {
   glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertex) * vertex_count, vertices);
   glDrawArrays(GL_TRIANGLES, 0, vertex_count);
   vertex_count = 0;

@@ -7,7 +7,7 @@
 export void press(Key);
 export void release(Key);
 
-export void app_init();
+export void app_init(void);
 export void app_update(float);
 
 export void resize(int, int);

@@ -18,7 +18,7 @@ void resize(int new_w, int new_h) {
   glViewport(0, 0, new_w, new_h);
 }
 
-void app_init() {
+void app_init(void) {
   glClearColor(0.18f, 0.18f, 0.18f, 1.0f);
 
   GameInit(&game);
