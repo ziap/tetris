@@ -3,8 +3,8 @@ PKGS=glfw3 glew
 CFLAGS=-Wall -Wextra -pedantic -std=c99 $$(pkg-config --cflags $(PKGS))
 LDLIBS=-lm $$(pkg-config --libs $(PKGS))
 
-DEBUG_FLAGS=-Og -ggdb -march=native -mtune=native
-BUILD_FLAGS=-O3 -s
+DEBUG_FLAGS=-Og -ggdb
+BUILD_FLAGS=-O3 -s -march=native -mtune=native
 
 WASM_CFLAGS=-O3 --target=wasm32 -flto -nostdlib -fvisibility=hidden -mbulk-memory -msimd128
 WASM_LDFLAGS=--no-entry --strip-debug --lto-O3 --allow-undefined --export-dynamic

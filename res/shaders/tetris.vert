@@ -4,7 +4,7 @@
 precision highp float;
 #endif
 
-#define MARGIN 24.0 * 2.0
+#define MARGIN 88.0 * 2.0
 
 layout (location = 0) in vec2 a_pos;
 layout (location = 1) in vec3 a_color;

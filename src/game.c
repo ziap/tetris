@@ -22,8 +22,8 @@ static bool Collision(
       int x = pos_x + i;
       int y = pos_y + j;
 
-      if (x >= 0 && x < 10 && y >= 0 && y < 20) {
-        if (game->data[10 * y + x] != PIECE_EMPTY) return true;
+      if (x >= 0 && x < 10 && y < 20) {
+        if (y >= 0 && game->data[10 * y + x] != PIECE_EMPTY) return true;
       } else {
         return true;
       }
@@ -46,18 +46,15 @@ static void SetFallingPiece(Game *game) {
   }
   game->falling.rotation = 0;
   game->falling.x = 3;
-  game->falling.y = 0;
+  game->falling.y = -2;
   game->gravity_delay = 1;
-
-  if (Collision(game, PieceGetShape(game->falling.type), 3, 0)) {
-    game->over = true;
-  }
 }
 
 static void LevelUp(Game *game) {
   game->level += game->level_progress / 5;
   game->level_progress %= 5;
 
+  // TODO: Fix this causing the piece to stop falling at very high speed
   game->speed = 1.0f;
   for (int i = 0; i < game->level; ++i) {
     game->speed *= (0.8f - game->level * 0.007f);
@@ -113,12 +110,19 @@ static void LineClear(Game *game) {
 static void Lock(Game *game) {
   const bool *rotation_table = FallingPieceGetRotation(&game->falling);
 
+  game->falling.y = game->ghost_y;
+
   for (int i = 0; i < 4; i++) {
     for (int j = 0; j < 4; j++) {
       if (!rotation_table[4 * j + i]) continue;
 
       int x = game->falling.x + i;
-      int y = game->ghost_y + j;
+      int y = game->falling.y + j;
+
+      if (y < 0) {
+        game->over = true;
+        return;
+      }
 
       if (x >= 0 && x < 10 && y >= 0 && y < 20) {
         if (game->data[10 * y + x] == PIECE_EMPTY) {
