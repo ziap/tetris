@@ -8,7 +8,7 @@ export void press(Key);
 export void release(Key);
 
 export void app_init(void);
-export void app_update(float);
+export void app_update(double);
 
 export void resize(int, int);
 export void update_mouse(float, float);

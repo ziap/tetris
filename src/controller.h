@@ -13,12 +13,12 @@ typedef struct {
   bool pressing[KEY_COUNT];
   bool dispatched[KEY_COUNT];
 
-  float as_left_delay;
-  float as_right_delay;
+  double as_left_delay;
+  double as_right_delay;
 
   Direction dir;
 } Controller;
 
-void ControllerUpdateGame(Controller*, Game*, float);
+void ControllerUpdateGame(Controller*, Game*, double);
 
 #endif

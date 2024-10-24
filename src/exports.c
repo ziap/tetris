@@ -26,8 +26,7 @@ void app_init(void) {
   RendererInit(&ui_renderer);
 }
 
-void app_update(float dt) {
-  (void)dt;
+void app_update(double dt) {
   glClear(GL_COLOR_BUFFER_BIT);
 
   ControllerUpdateGame(&controller, &game, dt);

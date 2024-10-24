@@ -1,9 +1,11 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <math.h>
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdio.h>
+#include <sys/random.h>
 
 #include "src/exports.h"
 
@@ -12,7 +14,9 @@
 
 #define TITLE "Tetris"
 
-int randint(int upper) { return rand() % upper; }
+void generate_seed(uint64_t *rng_state) {
+  getrandom(rng_state, sizeof(uint64_t), 0);
+}
 
 void resize_callback(GLFWwindow *window, int new_w, int new_h) {
   (void)window;
@@ -132,7 +136,7 @@ int main(void) {
     double now = glfwGetTime();
     if (now - last_display >= 1) {
       char title[64];
-      sprintf(title, "%s - FPS: %d", TITLE, frames);
+      snprintf(title, 64, "%s - FPS: %d", TITLE, frames);
       glfwSetWindowTitle(window, title);
       frames = 0;
       last_display = now;

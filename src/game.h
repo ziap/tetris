@@ -8,7 +8,7 @@ typedef struct {
   int height;
 
   int level;
-  float speed;
+  double speed;
 
   int score;
   int line_cleared;
@@ -17,13 +17,14 @@ typedef struct {
   bool soft_dropping;
   bool soft_dropped;
 
-  float gravity_delay;
+  double gravity_delay;
   FallingPiece falling;
 
   int ghost_y;
   bool hit_ground;
   int lock_resets;
 
+  uint64_t rng_state;
   Piece bag1[PIECE_COUNT - 1];
   Piece bag2[PIECE_COUNT - 1];
 
@@ -40,7 +41,7 @@ typedef struct {
 } Game;
 
 void GameInit(Game*);
-void GameTick(Game*, float);
+void GameTick(Game*, double);
 
 void GameSlide(Game*, int);
 void GameRotate(Game*, bool);

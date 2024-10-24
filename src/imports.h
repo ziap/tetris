@@ -1,11 +1,12 @@
 #ifndef IMPORTS_H
 #define IMPORTS_H
 
-#define NULL (const void *)0
+#include <stdint.h>
+#include <stddef.h>
+
 #define offsetof(t, d) __builtin_offsetof(t, d)
-#define sqrtf(x) __builtin_sqrtf(x)
-#define memset(dest, c, size) __builtin_memset(dest, c, size)
-#define memmove(dest, src, size) __builtin_memmove(dest, src, size)
+extern void *memset(void *s, int c, size_t n);
+extern void *memmove(void *dest, const void *src, size_t n);
 
 #define GL_FLOAT 0x1406
 #define GL_INT 0x1404
@@ -22,7 +23,7 @@ typedef enum { false, true } bool;
 #endif
 
 extern int puts(const char *);
-extern int randint(int);
+extern void generate_seed(uint64_t *);
 
 extern int glCreateBuffer(void);
 extern int glCreateVertexArray(void);

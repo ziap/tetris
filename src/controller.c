@@ -1,11 +1,10 @@
 #include "controller.h"
 
-#define DAS 0.17f
-#define ARR 0.03f
+#define DAS 0.17
+#define ARR 0.03
 
-void ControllerUpdateGame(Controller* c, Game* game, float dt) {
+void ControllerUpdateGame(Controller* c, Game* game, double dt) {
   (void)game;
-  (void)dt;
 
   bool dispatching[KEY_COUNT] = {0};
 

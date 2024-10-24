@@ -2,9 +2,32 @@
 
 static int line_sz(int lines) { return sizeof(Piece) * 10 * lines; }
 
-static void ShuffleBag(Piece *bag) {
-  for (int i = 0; i < PIECE_COUNT - 1; ++i) {
-    int j = randint(PIECE_COUNT - 1);
+#define MUL 6364136223846793005ULL
+#define INC 1442695040888963407ULL
+static uint32_t pcg_next(uint64_t *rng_state) {
+  uint64_t s = *rng_state;
+  *rng_state = s * MUL + INC;
+
+  uint32_t xorshifted = ((s >> 18u) ^ s) >> 27u;
+  uint32_t rot = s >> 59u;
+  return (xorshifted >> rot) | (xorshifted << ((-rot) & 31));
+}
+
+static uint32_t pcg_bounded(uint64_t *state, uint32_t range) {
+  uint32_t t = (-range) % range;
+  uint64_t m;
+
+  do {
+    m = (uint64_t)pcg_next(state) * (uint64_t)range;
+  } while ((uint32_t)m < t);
+
+  return m >> 32;
+}
+
+static void ShuffleBag(Piece *bag, uint64_t *rng_state) {
+  int len = PIECE_COUNT - 1;
+  for (int i = 0; i < len - 1; ++i) {
+    int j = pcg_bounded(rng_state, len - i) + i;
 
     Piece x = bag[i];
     bag[i] = bag[j];
@@ -42,7 +65,7 @@ static void SetFallingPiece(Game *game) {
     game->next_bag = game->current_bag;
     game->current_bag = x;
 
-    ShuffleBag(game->next_bag);
+    ShuffleBag(game->next_bag, &game->rng_state);
   }
   game->falling.rotation = 0;
   game->falling.x = 3;
@@ -50,15 +73,35 @@ static void SetFallingPiece(Game *game) {
   game->gravity_delay = 1;
 }
 
+static double speeds[] = {
+  1.0,
+  0.793,
+  0.617796,
+  0.472729139,
+  0.355196928256,
+  0.262003549978125,
+  0.18967724533271815,
+  0.1347347308155587,
+  0.09388224890421265,
+  0.06415158495985583,
+  0.042976258297035566,
+  0.02821767780121165,
+  0.018153328543517738,
+  0.01143934234680738,
+  0.007058616220934218,
+  0.004263556954438949,
+  0.0025200839695077954,
+  0.0014571387328407776,
+  0.0008239068955658087,
+  0.00045539771210842704,
+  0.00045539771210842704
+};
+
 static void LevelUp(Game *game) {
   game->level += game->level_progress / 5;
   game->level_progress %= 5;
 
-  // TODO: Fix this causing the piece to stop falling at very high speed
-  game->speed = 1.0f;
-  for (int i = 0; i < game->level; ++i) {
-    game->speed *= (0.8f - game->level * 0.007f);
-  }
+  game->speed = game->level > 20 ? speeds[20] : speeds[game->level];
 }
 
 static void UpdateGhost(Game *game) {
@@ -220,8 +263,10 @@ void GameInit(Game *game) {
     game->bag2[i - 1] = i;
   }
 
-  ShuffleBag(game->bag1);
-  ShuffleBag(game->bag2);
+  generate_seed(&game->rng_state);
+
+  ShuffleBag(game->bag1, &game->rng_state);
+  ShuffleBag(game->bag2, &game->rng_state);
 
   memset(game->data, 0, line_sz(20));
 
@@ -229,11 +274,11 @@ void GameInit(Game *game) {
   UpdateGhost(game);
 }
 
-void GameTick(Game *game, float dt) {
+void GameTick(Game *game, double dt) {
   if (game->over) return;
 
   if (game->falling.y < game->ghost_y) {
-    float dg = dt / game->speed;
+    double dg = dt / game->speed;
     if (game->soft_dropping) {
       dg *= 10;
       game->soft_dropped = true;
@@ -255,7 +300,7 @@ void GameTick(Game *game, float dt) {
       game->gravity_delay = 1;
     }
   } else {
-    game->gravity_delay -= dt / 0.5f;
+    game->gravity_delay -= dt / 0.5;
     if (game->gravity_delay <= 0) Lock(game);
   }
 }
@@ -310,7 +355,7 @@ void GameHold(Game *game) {
 
     game->falling.rotation = 0;
     game->falling.x = 3;
-    game->falling.y = 0;
+    game->falling.y = -2;
   }
   game->held = true;
   game->gravity_delay = 1;

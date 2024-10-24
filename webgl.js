@@ -20,8 +20,8 @@ const env = {
   puts(str) {
     console.log(cstr(str))
   },
-  randint(upper) {
-    return Math.random() * upper;
+  generate_seed(ptr) {
+    crypto.getRandomValues(new BigUint64Array(memory_buffer, ptr, 1))
   },
   glCreateBuffer() {
     const buffer = gl.createBuffer()
