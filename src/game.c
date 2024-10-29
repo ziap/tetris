@@ -94,20 +94,19 @@ static double speeds[] = {
   0.0014571387328407776,
   0.0008239068955658087,
   0.00045539771210842704,
-  0.00045539771210842704
 };
 
 static void LevelUp(Game *game) {
   game->level += game->level_progress / 5;
   game->level_progress %= 5;
 
-  game->speed = game->level > 20 ? speeds[20] : speeds[game->level];
+  game->speed = game->level > 19 ? speeds[19] : speeds[game->level];
 }
 
 static void UpdateGhost(Game *game) {
   game->ghost_y = game->falling.y;
 
-  const bool *rotation_table = FallingPieceGetRotation(&game->falling);
+  const bool *rotation_table = FallingPieceGetRotation(game->falling);
 
   while (true) {
     if (Collision(game, rotation_table, game->falling.x, game->ghost_y + 1)) {
@@ -118,10 +117,14 @@ static void UpdateGhost(Game *game) {
 }
 
 static void LineClear(Game *game) {
-  int current_row = game->ghost_y + 3;
+  PieceBounding bounding = PieceGetBounding(game->falling);
+  int clear_min = game->ghost_y + bounding.y_min;
+  int clear_max = game->ghost_y + bounding.y_max;
+
+  int current_row = clear_max - 1;
   int line_cleared = 0;
 
-  for (int i = current_row; i >= game->ghost_y; --i) {
+  for (int i = current_row; i >= clear_min; --i) {
     bool filled = true;
 
     for (int j = 0; j < 10; ++j) {
@@ -138,7 +141,7 @@ static void LineClear(Game *game) {
   }
 
   if (line_cleared > 0) {
-    memmove(game->data + line_cleared * 10, game->data, line_sz(game->ghost_y));
+    memmove(game->data + line_cleared * 10, game->data, line_sz(clear_min));
     memset(game->data, 0, line_sz(line_cleared));
 
     game->line_cleared += line_cleared;
@@ -151,7 +154,7 @@ static void LineClear(Game *game) {
 }
 
 static void Lock(Game *game) {
-  const bool *rotation_table = FallingPieceGetRotation(&game->falling);
+  const bool *rotation_table = FallingPieceGetRotation(game->falling);
 
   game->falling.y = game->ghost_y;
 
@@ -212,7 +215,7 @@ static Offset KICK_I[4][4] = {
 };
 
 static bool CheckWallKick(Game *game, FallingPiece *p, bool cw) {
-  const bool *rotation_table = FallingPieceGetRotation(p);
+  const bool *rotation_table = FallingPieceGetRotation(*p);
   if (!Collision(game, rotation_table, p->x, p->y)) return true;
 
   // Index of n - 1 >> n: n
@@ -308,7 +311,7 @@ void GameTick(Game *game, double dt) {
 void GameSlide(Game *game, int dx) {
   if (game->over) return;
 
-  const bool *rotation_table = FallingPieceGetRotation(&game->falling);
+  const bool *rotation_table = FallingPieceGetRotation(game->falling);
 
   if (!Collision(game, rotation_table, game->falling.x + dx, game->falling.y)) {
     game->falling.x += dx;

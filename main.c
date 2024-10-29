@@ -23,9 +23,7 @@ void resize_callback(GLFWwindow *window, int new_w, int new_h) {
   resize(new_w, new_h);
 }
 
-void key_callback(
-  GLFWwindow *window, int key, int scancode, int action, int mods
-) {
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
   (void)window;
   (void)scancode;
   (void)mods;
@@ -73,10 +71,7 @@ int glGetShaderParameter(int shader, int pname) {
   return param;
 }
 
-void message_callback(
-  GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
-  const GLchar *message, const void *userParam
-) {
+void message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam) {
   (void)source;
   (void)id;
   (void)length;

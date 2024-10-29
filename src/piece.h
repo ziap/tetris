@@ -16,6 +16,11 @@ typedef enum {
 } Piece;
 
 typedef struct {
+  int y_min;
+  int y_max;
+} PieceBounding;
+
+typedef struct {
   Piece type;
 
   int x;
@@ -24,10 +29,11 @@ typedef struct {
   int rotation;
 } FallingPiece;
 
-const bool *FallingPieceGetRotation(FallingPiece *);
+const bool *FallingPieceGetRotation(FallingPiece);
 
 const bool *PieceGetShape(Piece);
 const float *PieceGetColor(Piece);
 const float *PieceGetOffset(Piece);
+PieceBounding PieceGetBounding(FallingPiece);
 
 #endif

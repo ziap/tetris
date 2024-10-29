@@ -26,9 +26,7 @@ typedef struct {
 static Vertex vertices[VERTICES_CAPACITY];
 static int vertex_count = 0;
 
-static void AddTriangle(
-  Vec2 p1, Vec2 p2, Vec2 p3, Color c, Vec2 uv1, Vec2 uv2, Vec2 uv3, int type
-) {
+static void AddTriangle(Vec2 p1, Vec2 p2, Vec2 p3, Color c, Vec2 uv1, Vec2 uv2, Vec2 uv3, int type) {
   if (vertex_count + 3 > VERTICES_CAPACITY) RendererRender();
   vertices[vertex_count].pos = p1;
   vertices[vertex_count].color = c;
@@ -49,10 +47,7 @@ static void AddTriangle(
   vertex_count++;
 }
 
-static void AddRectTextured(
-  float x, float y, float w, float h, Color c, float u, float v, float uv_scale,
-  int type
-) {
+static void AddRectTextured(float x, float y, float w, float h, Color c, float u, float v, float uv_scale, int type) {
   Vec2 p1 = {x, y};
   Vec2 p2 = {x + w, y};
   Vec2 p3 = {x, y + h};
@@ -180,7 +175,7 @@ void RendererUpdate(Renderer *ur, Game *game) {
     }
   }
 
-  const bool *rotation_table = FallingPieceGetRotation(&game->falling);
+  const bool *rotation_table = FallingPieceGetRotation(game->falling);
   const float *color = PieceGetColor(game->falling.type);
 
   Color c;
